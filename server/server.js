@@ -1,7 +1,7 @@
 require("dotnev").config()
 const OpenAI = require("openai")
 const express = require("express")
-const axios = require("axios")  
+const axios = require("axios")
 const bodyParser = require("body-parser")
 const mongoose = require("mongoose")
 const cors = require("cors")
