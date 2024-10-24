@@ -8,11 +8,11 @@ function App() {
 
   const summarizeText = async ()=> {
     try{
-      const response = await axios.post(
-        `${process.env.REACT_BACKEND_URL}/api/summarize`,
-        {text: inputText}
-      );
-      setSummary(response.data.summary);
+      console.log("Backend URL:", process.env.REACT_APP_BACKEND_URL); // Log the backend URL
+            const url = `${process.env.REACT_APP_BACKEND_URL}/api/summarize`;
+            console.log("API Call URL:", url); // Log the URL for debugging
+            const response = await axios.post(url, { text: inputText });
+            setSummary(response.data.summary);
     }
     catch(error){
       console.error('Error calling backend api: ', error)
@@ -27,6 +27,10 @@ function App() {
         value = {inputText}
         onChange={(e)=>setInputText(e.target.value)}
       ></textarea>
+      <br/>
+      <button onClick={summarizeText}>Summarize</button>
+      <h2>Summary:</h2>
+      <p>{summary}</p>
     </div>
   )
 }

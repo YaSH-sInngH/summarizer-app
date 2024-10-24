@@ -1,4 +1,4 @@
-require("dotnev").config()
+require("dotenv").config()
 const OpenAI = require("openai")
 const express = require("express")
 const axios = require("axios")
@@ -22,13 +22,13 @@ mongoose.connect(process.env.MONGODB_URI, {
 })
 
 //defining a schema
-const summarySchema = new mongoose.schema({
+const summarySchema = new mongoose.Schema({
     text: String,
     summarizedText: String
 })
 
 //defining a model for schema
-const summary = mongoose.model("Summary", summaySchema)
+const Summary = mongoose.model("Summary", summarySchema)
 
 app.post("/api/summarize", async(req, res)=> {
     const {text} = req.body;
@@ -38,20 +38,19 @@ app.post("/api/summarize", async(req, res)=> {
     })
     try{
         const response = await openai.chat.completions.create({
-            model: "gpt-4o",
+            model: "gpt-4",
             messages: [
                 {
                     role: "system", 
-                    content: `Summarize content you are provided with 
-                         for a second-grade student.`,
+                    content: `Summarize content you are provided with for a second-grade student.`,
                 },
                 {
                     role: "user",
-                    content: "text",
+                    content: text,
                 },
-            ]
+            ],
             temperature: 0.7,
-            max_tokens: 64;
+            max_tokens: 64,
             top_p: 1,
         })
 
