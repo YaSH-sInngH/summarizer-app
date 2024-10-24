@@ -22,8 +22,51 @@ mongoose.connect(process.env.MONGODB_URI, {
 })
 
 //defining a schema
+const summarySchema = new mongoose.schema({
+    text: String,
+    summarizedText: String
+})
+
+//defining a model for schema
 const summary = mongoose.model("Summary", summaySchema)
 
 app.post("/api/summarize", async(req, res)=> {
-    const {text}
+    const {text} = req.body;
+
+    const openai = new OpenAI({
+        apikey: API_KEY,
+    })
+    try{
+        const response = await openai.chat.completions.create({
+            model: "gpt-4o",
+            messages: [
+                {
+                    role: "system", 
+                    content: `Summarize content you are provided with 
+                         for a second-grade student.`,
+                },
+                {
+                    role: "user",
+                    content: "text",
+                },
+            ]
+            temperature: 0.7,
+            max_tokens: 64;
+            top_p: 1,
+        })
+
+        const summarizedText = String(response.choices[0].message.content)
+        const newSummary  = new Summary({text, summarizedText})
+        await newSummary.save()
+
+        res.json({summary: summarizedText})
+    }
+    catch(error){
+        console.error("Error Calling OpenAI API:", error)
+        res.status(500).json({error: "Internal Server Error"})
+    }
+})
+
+app.listen(PORT, ()=>{
+    console.log(`Server is running on port ${PORT}`)
 })
