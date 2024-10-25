@@ -7,15 +7,14 @@ function App() {
   const [summary, setSummary] = useState("");
 
   const summarizeText = async ()=> {
-    try{
-      console.log("Backend URL:", process.env.REACT_APP_BACKEND_URL); // Log the backend URL
-            const url = `${process.env.REACT_APP_BACKEND_URL}/api/summarize`;
-            console.log("API Call URL:", url); // Log the URL for debugging
-            const response = await axios.post(url, { text: inputText });
-            setSummary(response.data.summary);
-    }
-    catch(error){
-      console.error('Error calling backend api: ', error)
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/api/summarize`,
+        { text: inputText }
+      );
+      setSummary(response.data.summary);
+    } catch (error) {
+      console.error('Error calling backend api:', error.response ? error.response.data : error.message);
     }
   }
   return (
